@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eb9b962dd7675847a24903344229fee, type: 3}
+  m_Name: MicroSplatSnow
+  m_EditorClassIdentifier: 
+  Size: 1
+  Path: 
+  WrapMode: 0
+  FilterMode: 2
+  AnisoLevel: 8
+  Textures:
+  - Albedo: {fileID: 2800000, guid: da4cb2475d185e044bf26b2311b21710, type: 3}
+    Height: {fileID: 2800000, guid: 8e5d560b32fb4414b83fe8681b04b066, type: 3}
+    Normal: {fileID: 2800000, guid: 7abd450c652a0f94ab8124dbcd16a6c1, type: 3}
+    IsNormalSwitched: 1
+    IsNormalInverted: 0
+    IsHeightCentered: 0
+    IsHeightNormalized: 1
+    Smoothness: {fileID: 2800000, guid: bbb7529567975424189185964e19e639, type: 3}
+    IsRoughness: 1
+    Occlusion: {fileID: 0}

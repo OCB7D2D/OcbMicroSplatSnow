@@ -1,0 +1,156 @@
+<configs>
+	<append xpath="/worldglobal">
+		<!-- custom textures can be defined at the global scope -->
+		<!-- only ones needed by the loaded map will be applied -->
+		<microsplat-texture name="snow0">
+			<property name="Diffuse" value="#@modfolder:Resources/Snow.unity3d?MicroSplatSnow_diff_tarray[0]"/>
+			<property name="Normal" value="#@modfolder:Resources/Snow.unity3d?MicroSplatSnow_norm_tarray[0]"/>
+			<property name="Specular" value="#@modfolder:Resources/Snow.unity3d?MicroSplatSnow_shao_tarray[0]"/>
+			<property name="SwitchNormal" value="false"/>
+			<property name="SplatUVScale" value="2,2"/>
+		</microsplat-texture>
+
+		<!-- Apply this biome patch to all world -->
+		<biomes-config world="*">
+			<!-- ############################################################################## -->
+			<!-- We patch up the snow biome to include one additional texture for mixing -->
+			<!-- Patching Biomes is certainly not the easiest, as you'll need to understand at -->
+			<!-- least the basics of how MicroSplat shader determines which textures to use. -->
+			<!-- ****************************************************************************** -->
+			<!-- MicroSplat uses Runtime Procedural Texturing, which means relevant textures -->
+			<!-- are determined on runtime by certain parameters. The most used one will be -->
+			<!-- the `slope` parameter, which is `0` on flat areas and `1` on steep slopes. -->
+			<!-- You will need to enable the parameter via `slop-active` and define the -->
+			<!-- `slope-curve-mode` to make it active. Then set the `slop-keyframe` to -->
+			<!-- define the curve that will basically apply as a factor the the `weight` -->
+			<!-- ****************************************************************************** -->
+			<!-- Note that I haven't looked too much into `height` parameter, but I think -->
+			<!-- this should be possible to use either local to a block or world global. -->
+			<!-- E.g. you could say that a texture only shows at the top of each block, with -->
+			<!-- the local reference frame, or to show snow above a global world height. -->
+			<!-- ***************************************************************************** -->
+			<!-- The shader will go through all biome-layers and calculate those parameters -->
+			<!-- to determine the final weight at a certain point (pixel fragment). Only the -->
+			<!-- top four weighted layers will then be blended together to produce the final -->
+			<!-- result. One of the most important "filters" are the `biome-weight-x` params. -->
+			<!-- These are matched against the world splatmaps that define the biome borders. -->
+			<!-- ****************************************************************************** -->
+			<!-- The snow biome is the red color in the first splatmap. These splatmaps often -->
+			<!-- only exist in memory, and are created from `biomes.png` found in maps folder. -->
+			<!-- You may also use the same texture in multiple biomes (with different weights). -->
+			<!-- Although vanilla never does that and remember, only top four ones are used! -->
+			<!-- ############################################################################## -->
+			<!-- For current biome layer configs, use cmd `msplat layers` and `msplay layer X` -->
+			<!-- ############################################################################## -->
+			<!-- For those who want to really dig into all the possibilites, I recommend to -->
+			<!-- buy the `MicroSplat runtime procedural texturing` plugin for $25 (UnityStore). -->
+			<!-- https://assetstore.unity.com/packages/tools/terrain/143039 -->
+			<!-- And also watch: https://www.youtube.com/watch?v=bGpdjbm26x0 -->
+			<!-- ############################################################################## -->
+
+			<!-- We adjust some parameters for the first "snow" layer -->
+			<!-- The stone layer that should show on steeper slopes -->
+			<biome-layer index="0">
+				<!-- Show a little by default, rest by slope curve -->
+				<property name="weight" value="0.5"/>
+				<!-- `microsplat19` means original texture at index 19 (stone) -->
+				<property name="microsplat-texture" value="microsplat19"/>
+				<!-- <property name="biome-weights-a" value="1.0, 0.0, 0.0, 0.0"/> -->
+				<!-- <property name="biome-weights-b" value="0.0, 0.0, 0.0, 0.0"/> -->
+				<!-- Noise modifies the weight of the layer. You can use the frequency and offset -->
+				<!-- to scale or move the noise, while the min and max parameters remap the noise -->
+				<!-- output. You can use the remapping to make the noise faint (0.0 to 0.2), -->
+				<!-- increase contrast (0 to 5), or even be subtractive (-1 to 0). -->
+				<property name="noise-active" value="False"/>
+				<property name="noise-frequency" value="10"/>
+				<property name="noise-offset" value="0"/>
+				<property name="noise-range" value="0.025, 1"/>
+				<!-- When enabled, lets you define a curve to determine which slopes the layer -->
+				<!-- should appear on. The angle goes from 0-1, with 0 being down and 1 being up. -->
+				<property name="slope-active" value="True"/>
+				<property name="slope-curve-mode" value="Curve"/>
+				<slope-keyframes>
+					<keyframe time="0.025" value="0.0"/>
+					<keyframe time="0.2" value="1.0"/>
+				</slope-keyframes>
+				<!-- When enabled, you can use a curve to determine how much weight the layer -->
+				<!-- should have at what heights. Remember to set the height range.-->
+				<property name="height-active" value="False"/>
+				<property name="height-curve-mode" value="Curve"/>
+				<height-keyframes>
+					<keyframe time="0.0" value="0.0"/>
+					<keyframe time="1.0" value="1.0"/>
+				</height-keyframes>
+			</biome-layer>
+
+			<!-- We replace 2nd "snow" layer (at index 1) with our new texture -->
+			<!-- We want to have this layer before the vanilla snow texture -->
+			<!-- Basically re-ordering layers by recreating old one later on -->
+			<biome-layer index="1">
+				<property name="weight" value="0.5"/>
+				<!-- reference the new texture added above -->
+				<property name="microsplat-texture" value="snow0"/>
+				<!-- <property name="biome-weights-a" value="1.0, 0.0, 0.0, 0.0"/> -->
+				<!-- <property name="biome-weights-b" value="0.0, 0.0, 0.0, 0.0"/> -->
+				<!-- Noise modifies the weight of the layer. You can use the frequency and offset -->
+				<!-- to scale or move the noise, while the min and max parameters remap the noise -->
+				<!-- output. You can use the remapping to make the noise faint (0.0 to 0.2), -->
+				<!-- increase contrast (0 to 5), or even be subtractive (-1 to 0). -->
+				<property name="noise-active" value="False"/>
+				<property name="noise-frequency" value="35"/>
+				<property name="noise-offset" value="0.0"/>
+				<property name="noise-range" value="0.6, 0.0"/>
+				<!-- When enabled, lets you define a curve to determine which slopes the layer -->
+				<!-- should appear on. The angle goes from 0-1, with 0 being down and 1 being up. -->
+				<property name="slope-active" value="True"/>
+				<property name="slope-curve-mode" value="Curve"/>
+				<slope-keyframes>
+					<keyframe time="0.0" value="1.0"/>
+					<keyframe time="0.15" value="0.0"/>
+				</slope-keyframes>
+				<!-- When enabled, you can use a curve to determine how much weight the layer -->
+				<!-- should have at what heights. Remember to set the height range.-->
+				<property name="height-active" value="False"/>
+				<property name="height-curve-mode" value="Curve"/>
+				<height-keyframes>
+					<keyframe time="0.0" value="0.0"/>
+					<keyframe time="1.0" value="1.0"/>
+				</height-keyframes>
+			</biome-layer>
+
+			<!-- Recreate old layer referencing `microsplat0` texture -->
+			<!-- Ensures original texture comes after the new one -->
+			<biome-layer name="snow3">
+				<property name="weight" value="0.25"/>
+				<!-- `microsplat0` means original texture at index 0 -->
+				<property name="microsplat-texture" value="microsplat0"/>
+				<!-- <property name="biome-weights-a" value="1.0, 0.0, 0.0, 0.0"/> -->
+				<!-- <property name="biome-weights-b" value="0.0, 0.0, 0.0, 0.0"/> -->
+				<!-- Noise modifies the weight of the layer. You can use the frequency and offset -->
+				<!-- to scale or move the noise, while the min and max parameters remap the noise -->
+				<!-- output. You can use the remapping to make the noise faint (0.0 to 0.2), -->
+				<!-- increase contrast (0 to 5), or even be subtractive (-1 to 0). -->
+				<property name="noise-active" value="True"/>
+				<property name="noise-frequency" value="6.5"/>
+				<property name="noise-offset" value="0"/>
+				<property name="noise-range" value="-0.15, 1.25"/>
+				<!-- When enabled, lets you define a curve to determine which slopes the layer -->
+				<!-- should appear on. The angle goes from 0-1, with 0 being down and 1 being up. -->
+				<property name="slope-active" value="True"/>
+				<property name="slope-curve-mode" value="Curve"/>
+				<slope-keyframes>
+					<keyframe time="0.0" value="1.0"/>
+					<keyframe time="0.1" value="0.0"/>
+				</slope-keyframes>
+				<!-- When enabled, you can use a curve to determine how much weight the layer -->
+				<!-- should have at what heights. Remember to set the height range.-->
+				<property name="height-active" value="False"/>
+				<property name="height-curve-mode" value="Curve"/>
+				<height-keyframes>
+					<keyframe time="0.0" value="0.0"/>
+					<keyframe time="1.0" value="1.0"/>
+				</height-keyframes>
+			</biome-layer>
+		</biomes-config>
+	</append>
+</configs>

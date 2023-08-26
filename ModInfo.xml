@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xml>
+	<Name value="OcbMicroSplatSnow" />
+	<DisplayName value="OCB Custom MicroSplat Snow Biome Demo" />
+	<Description value="Enhance MicroSplat snow biome, requires OcbMicroSplat." />
+	<Website value="https://github.com/OCB7D2D/OcbMicroSnow" />
+	<Author value="ocbMaurice" />
+	<Version value="0.1.0" />
+</xml>
