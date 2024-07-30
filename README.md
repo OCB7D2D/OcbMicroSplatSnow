@@ -28,6 +28,7 @@ First screen shows custom biome, second one vanilla:
 
 - First compatibility with V1.0 (exp)
 - Bumped unity version to 2022.3.29f1
+- Verified compatibility with V1.0 (b333)
 
 ### Version 0.1.0
 
