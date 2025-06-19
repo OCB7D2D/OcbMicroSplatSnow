@@ -24,6 +24,10 @@ First screen shows custom biome, second one vanilla:
 
 ## Changelog
 
+### Version 0.2.1
+
+- Update for 7D2D V2.0 stable
+
 ### Version 0.2.0
 
 - First compatibility with V1.0 (exp)
